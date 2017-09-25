@@ -15,5 +15,7 @@
 /roles/*
 !/roles/requirements.yml
 
+files/certs/*
+
 # global exception for keeping empty directory in repository
 !.gitkeep

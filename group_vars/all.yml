@@ -1,23 +1,2 @@
-# let's skip linux-kernel-virt for now
-
-# @role geerlingguy.pip
-pip_install_packages:
-  - name: docker-compose
-    version: 1.16.1
-
-# @role ball6847.role.apt-select
-apt_select_country: TH
-
 # @role atosatto.docker-swarm
 docker_swarm_interface: "{{ network_interface }}"
-#docker_dependencies: []
-docker_admin_users:
-  - "{{ ansible_ssh_user }}"
-
-# @role ball6847.role.docker-daemon-json
-docker_daemon_json: "{{ playbook_dir }}/files/docker/daemon.json"
-
-
-docker_registry: 192.168.100.254:5000
-project_path: /opt/docker_swarm_test
-project_name: app

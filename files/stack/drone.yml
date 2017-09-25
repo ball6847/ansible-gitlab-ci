@@ -1,41 +1,6 @@
 version: '3.3'
 
 services:
-  gogs:
-    image: gogs/gogs:0.11.29
-    depends_on:
-      - mariadb
-    environment:
-      SOCAT_LINK: 0
-      RUN_CROND: 1
-    deploy:
-      mode: replicated
-      replicas: 1
-      placement:
-        constraints:
-          - node.labels.role == ci
-    ports:
-      - "10022:22"
-      - "10080:3000"
-    volumes:
-      - "/volume/ci/gogs:/data"
-
-  mariadb:
-    image: mariadb:10.1
-    environment:
-      MYSQL_DATABASE: gogs
-      MYSQL_USER: gogs
-      MYSQL_PASSWORD: gogs
-      MYSQL_ROOT_PASSWORD: somethingrandomandhardtoguess
-    deploy:
-      mode: replicated
-      replicas: 1
-      placement:
-        constraints:
-          - node.labels.role == ci
-    volumes:
-      - "/volume/ci/mariadb:/var/lib/mysql"
-
   drone-server:
     image: drone/drone:0.7
     environment:
