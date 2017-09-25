@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
     ubuntu.vm.hostname = "server1"
     ubuntu.vm.network "public_network", bridge: "enp1s0"
     ubuntu.vm.synced_folder "./", "/vagrant", disabled:true
-    ubuntu.ssh.guest_port = 2222
+    ubuntu.ssh.port = 2222
     ubuntu.ssh.insert_key = false
     ubuntu.ssh.private_key_path = ["~/.vagrant.d/insecure_private_key"]
     #ubuntu.ssh.username = "ubuntu"
@@ -22,7 +22,7 @@ Vagrant.configure("2") do |config|
     ubuntu.vm.hostname = "server2"
     ubuntu.vm.network "public_network", bridge: "enp1s0"
     ubuntu.vm.synced_folder "./", "/vagrant", disabled:true
-    ubuntu.ssh.guest_port = 2222
+    ubuntu.ssh.port = 2222
     ubuntu.ssh.insert_key = false
     ubuntu.ssh.private_key_path = ["~/.vagrant.d/insecure_private_key"]
     #ubuntu.ssh.username = "ubuntu"
