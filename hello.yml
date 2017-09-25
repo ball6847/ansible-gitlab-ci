@@ -1,0 +1,8 @@
+- name: Hello
+  hosts: all
+  tasks:
+    - shell: echo "Hello World"
+      register: hello_world
+    
+    - debug:
+        var: hello_world
