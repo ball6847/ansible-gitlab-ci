@@ -16,7 +16,7 @@ services:
     command:
     - --loglevel warning
     volumes:
-    - /opt/gitlab/redis:/var/lib/redis:Z
+    - /opt/gitlab/redis:/var/lib/redis
     deploy:
       mode: replicated
       replicas: 1
@@ -28,7 +28,7 @@ services:
     # restart: always
     image: sameersbn/postgresql:9.6-2
     volumes:
-    - /opt/gitlab/postgresql:/var/lib/postgresql:Z
+    - /opt/gitlab/postgresql:/var/lib/postgresql
     environment:
     - DB_USER=gitlab
     - DB_PASS=password
@@ -47,13 +47,16 @@ services:
     depends_on:
     - redis
     - postgresql
-    external_links:
-    - "registry:registry.gitlab.example.com"
+    # external_links:
+    # - "registry:registry.gitlab.example.com"
+    extra_hosts:
+    - "gitlab.example.com:192.168.100.208"
+    - "registry.gitlab.example.com:192.168.100.208"
     ports:
     - "10080:80"
     - "10022:22"
     volumes:
-    - /opt/gitlab/gitlab:/home/git/data:Z
+    - /opt/gitlab/gitlab:/home/git/data
     - /opt/gitlab/logs:/var/log/gitlab
     - /opt/gitlab/certs:/certs
     environment:
@@ -90,8 +93,11 @@ services:
   registry:
     # restart: always
     image: registry:2.4.1
-    external_links:
-    - "gitlab:gitlab.example.com"
+    # external_links:
+    # - "gitlab:gitlab.example.com"
+    extra_hosts:
+    - "gitlab.example.com:192.168.100.208"
+    - "registry.gitlab.example.com:192.168.100.208"
     ports:
     - "5000:5000"
     volumes:
