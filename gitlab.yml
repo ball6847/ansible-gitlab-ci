@@ -13,32 +13,56 @@
         - /opt/gitlab/logs      
         - /opt/gitlab/certs
 
-- name: Create CI/CD Stack
-  hosts: docker_swarm_manager
-  run_once: True
-  become: True
-  vars:
-    - stack_name: ci
-  tasks:
-    - name: Setup node label
-      shell: docker node update --label-add role=ci "{{ item }}"
-      register: setup_node_label
-      changed_when: False # output always the same except, wrong node names
-      with_items:
-        - "{{ groups.ci_cd }}"
-
-    - name: Create stack.yml
-      tempfile:
-        suffix: _stack.yml
-      register: stack_yml_tempfile
-
-    - name: Setup stack.yml content
+    - name: generate certs if neccessary
+      delegate_to: localhost
+      shell: |
+        test -e registry-auth.crt || 
+        (
+          openssl req -nodes -newkey rsa:4096 -keyout registry-auth.key -out registry-auth.csr -subj "/CN=registry.example.com" &&
+          openssl x509 -in registry-auth.csr -out registry-auth.crt -req -signkey registry-auth.key -days 3650
+        ) 2>&1
+      args:
+        chdir: files/certs
+      register: gen_certs
+      changed_when: "'Getting Private key' in gen_certs.stdout"
+    
+    - name: upload certs
       copy:
-        src: "files/stack/gitlab.yml"
-        dest: "{{ stack_yml_tempfile.path }}"
+        src: "files/certs/{{ item }}"
+        dest: "/opt/gitlab/certs/{{ item }}"
+      with_items:
+        - registry-auth.crt
+        - registry-auth.csr
+        - registry-auth.key
 
-    - name: Deploy stack
-      shell: "docker stack deploy -c {{ stack_yml_tempfile.path }} {{ stack_name }}"
+        
+
+# - name: Create CI/CD Stack
+#   hosts: docker_swarm_manager
+#   run_once: True
+#   become: True
+#   vars:
+#     - stack_name: ci
+#   tasks:
+#     - name: Setup node label
+#       shell: docker node update --label-add role=ci "{{ item }}"
+#       register: setup_node_label
+#       changed_when: False # output always the same except, wrong node names
+#       with_items:
+#         - "{{ groups.ci_cd }}"
+
+#     - name: Create stack.yml
+#       tempfile:
+#         suffix: _stack.yml
+#       register: stack_yml_tempfile
+
+#     - name: Setup stack.yml content
+#       copy:
+#         src: "files/stack/gitlab.yml"
+#         dest: "{{ stack_yml_tempfile.path }}"
+
+#     - name: Deploy stack
+#       shell: "docker stack deploy -c {{ stack_yml_tempfile.path }} {{ stack_name }}"
 
     # - name: cleaning
     #   file:
