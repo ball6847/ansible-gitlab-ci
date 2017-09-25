@@ -1,0 +1,19 @@
+# vim backup, generic log files
+*.swp
+*.swo
+*.log
+*.retry
+
+# python and vagrant environment
+.direnv
+.virtualenv
+.venv
+.vagrant
+
+# ansible roles, generally grab it from ansible-gallaxy.
+# you might need to add exception here if you have roles developed locally.
+/roles/*
+!/roles/requirements.yml
+
+# global exception for keeping empty directory in repository
+!.gitkeep

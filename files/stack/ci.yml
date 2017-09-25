@@ -1,0 +1,76 @@
+version: '3.3'
+
+services:
+  gogs:
+    image: gogs/gogs:0.11.29
+    depends_on:
+      - mariadb
+    environment:
+      SOCAT_LINK: 0
+      RUN_CROND: 1
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.role == ci
+    ports:
+      - "10022:22"
+      - "10080:3000"
+    volumes:
+      - "/volume/ci/gogs:/data"
+
+  mariadb:
+    image: mariadb:10.1
+    environment:
+      MYSQL_DATABASE: gogs
+      MYSQL_USER: gogs
+      MYSQL_PASSWORD: gogs
+      MYSQL_ROOT_PASSWORD: somethingrandomandhardtoguess
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.role == ci
+    volumes:
+      - "/volume/ci/mariadb:/var/lib/mysql"
+
+  drone-server:
+    image: drone/drone:0.7
+    environment:
+      DRONE_OPEN: "true"
+      DRONE_SECRET: drone
+      DRONE_GOGS: "true"
+      DRONE_GOGS_URL: http://gogs:3000/
+      DRONE_GOGS_PRIVATE_MODE: "false"
+      DRONE_GOGS_SKIP_VERIFY: "true"
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.role == ci
+    ports:
+      - 8000:8000
+    volumes:
+      - "/volume/ci/drone:/var/lib/drone/"
+
+  drone-agent:
+    image: drone/drone:0.7
+    command: agent
+    restart: unless-stopped
+    depends_on:
+      - drone-server
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.role == ci
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      DRONE_SERVER: ws://drone-server:8000/ws/broker
+      DRONE_SECRET: drone
+

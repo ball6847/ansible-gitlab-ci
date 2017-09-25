@@ -1,0 +1,9 @@
+- name: "Provisioning Swarm Cluster"
+  hosts: docker_swarm_manager,docker_swarm_worker
+  gather_facts: yes
+  become: yes
+  serial: 1
+  tags:
+    - docker_swarm
+  roles:
+  - { role: atosatto.docker-swarm, skip_docker_py: yes, skip_group: yes, skip_engine: yes }

@@ -1,0 +1,13 @@
+---
+- name: Show running tasks
+  hosts: docker_swarm_manager
+  run_once: yes
+  become: yes
+  gather_facts: no
+  tasks:
+    - shell: "docker service ps {{ project_name }} --filter desired-state=running"
+      register: docker_service_ps
+      changed_when: no
+
+    - debug:
+        msg: "{{ docker_service_ps.stdout_lines }}"

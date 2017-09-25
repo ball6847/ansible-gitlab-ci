@@ -1,0 +1,28 @@
+{
+  "docker_swarm_manager": {
+    "hosts": [
+      "server1"
+    ],
+    "vars": {
+      "network_interface": "enp0s8"
+    }
+  },
+  "docker_swarm_worker": {
+    "hosts": [
+      "server2"
+    ],
+    "vars": {
+      "network_interface": "enp0s8"
+    }
+  },
+  "ci_cd": {
+    "hosts": [
+      "server1"
+    ]
+  },
+  "app": {
+    "hosts":[
+      "server2"
+    ]
+  }
+}

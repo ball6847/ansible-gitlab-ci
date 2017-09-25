@@ -1,0 +1,11 @@
+- src: atosatto.docker-swarm
+- src: zaxos.docker-ce-ansible-role
+- src: geerlingguy.pip
+- src: https://github.com/ball6847/ball6847.role.python.git
+  version: master
+- src: https://github.com/ball6847/ball6847.role.resolvconf.git
+  version: master
+- src: https://github.com/ball6847/ball6847.role.docker-registry.git
+  version: master
+- src: https://github.com/ball6847/ball6847.role.apt-cacher.git
+  version: master

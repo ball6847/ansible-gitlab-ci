@@ -1,0 +1,45 @@
+- name: Create volume on all node
+  hosts: docker_swarm_manager,docker_swarm_worker
+  become: True
+  tasks:
+    - name: ensure volume directories existed on all swarm nodes
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - /volume/ci/gogs
+        - /volume/ci/mariadb
+        - /volume/ci/drone
+
+
+- name: Create CI/CD Stack
+  hosts: docker_swarm_manager
+  run_once: True
+  become: True
+  vars:
+    - stack_name: ci
+  tasks:
+    - name: Setup node label
+      shell: docker node update --label-add role=ci "{{ item }}"
+      register: setup_node_label
+      changed_when: False # output always the same except, wrong node names
+      with_items:
+        - "{{ groups.ci_cd }}"
+
+    - name: Create stack.yml
+      tempfile:
+        suffix: _stack.yml
+      register: stack_yml_tempfile
+
+    - name: Setup stack.yml content
+      copy:
+        src: "files/stack/ci.yml"
+        dest: "{{ stack_yml_tempfile.path }}"
+
+    - name: Deploy stack
+      shell: "docker stack deploy -c {{ stack_yml_tempfile.path }} {{ stack_name }}"
+
+    # - name: cleaning
+    #   file:
+    #     path: "{{ stack_yml_tempfile.path }}"
+    #     state: absent

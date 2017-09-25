@@ -1,0 +1,5 @@
+- name: Install Python
+  hosts: all
+  gather_facts: false
+  roles:
+    - { role: ball6847.role.python, tags: [ python] }

@@ -1,0 +1,21 @@
+version: '3.3'
+
+services:
+  caddy:
+    image: 192.168.100.254:5000/caddy
+    depends_on:
+      - php
+    ports:
+      - "80:80"
+      - "443:443"
+    deploy:
+      mode: replicated
+      replicas: 2
+      placement:
+        constraints:
+          - node.role == manager
+  php:
+    image: 192.168.100.254:5000/php
+    deploy:
+      mode: replicated
+      replicas: 3

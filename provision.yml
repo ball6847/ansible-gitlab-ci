@@ -1,0 +1,26 @@
+- name: Provisioning Server
+  hosts: all
+  gather_facts: yes
+  become: yes
+  serial: 1
+  handlers:
+    - name: apt update
+      apt:
+        update_cache: yes
+  pre_tasks:
+    - name: Configure apt proxy
+      copy:
+        src: files/apt/proxy.conf
+        dest: /etc/apt/apt.conf.d/01proxy
+    - name: Add /etc/apt/sources.list
+      copy:
+        src:  files/apt/sources.list
+        dest: /etc/apt/sources.list
+      notify:
+        - apt update
+  roles:
+    - { role: ball6847.role.resolvconf, tags: [ resolv ] }
+    - { role: geerlingguy.pip, tags: [ pip ] }
+    - { role: zaxos.docker-ce-ansible-role, tags: [ docker ] }
+    - { role: atosatto.docker-swarm, skip_swarm: yes, skip_docker_py: yes, skip_engine: yes, tags: [ docker ] }
+    - { role: ball6847.role.docker-daemon-json, tags: [ docker ] }
