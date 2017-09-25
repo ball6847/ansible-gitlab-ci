@@ -9,10 +9,9 @@ Vagrant.configure("2") do |config|
     ubuntu.vm.synced_folder "./", "/vagrant", disabled:true
     ubuntu.ssh.insert_key = false
     ubuntu.ssh.private_key_path = ["~/.vagrant.d/insecure_private_key"]
-    #ubuntu.ssh.username = "ubuntu"
     ubuntu.vm.provider "virtualbox" do |vb|
       vb.cpus = 1
-      vb.memory = 2*1024
+      vb.memory = 4*1024
     end
   end
 
@@ -23,10 +22,9 @@ Vagrant.configure("2") do |config|
     ubuntu.vm.synced_folder "./", "/vagrant", disabled:true
     ubuntu.ssh.insert_key = false
     ubuntu.ssh.private_key_path = ["~/.vagrant.d/insecure_private_key"]
-    #ubuntu.ssh.username = "ubuntu"
     ubuntu.vm.provider "virtualbox" do |vb|
       vb.cpus = 1
-      vb.memory = 2*1024
+      vb.memory = 1*1024
     end
   end
 end
