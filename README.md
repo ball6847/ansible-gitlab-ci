@@ -1,35 +1,57 @@
-Quickly create new project skeleton using this command.
+Gitlab CI
+=========
 
-```bash
-mkdir project && cd project
-wget -qO- https://github.com/ball6847/ansible-skeleton/archive/master.tar.gz | tar -zx --strip-components=1
-```
+Ansible playbooks setup gitlab with gitlab-runner
 
-## Usage
+Features
+--------
+
+- Gitlab 9.5
+- Gitlab Container Registry
+- Gitlab Runner (running job for pipeline)
+
+Requirements
+------------
+
+- Ubuntu 16.04
+- Docker 17.05-ce
+
+Installation
+------------
+
+Assuming you have set server information in `inventories/hosts.ini`
+
+First, setup swarm cluster.
 
 ```sh
-# before starting, you should activate virtualenv or direnv if you have one.
-# assuming you are using direnv (which I personally recommend it)
-# this activate python environment
-direnv allow
-
-# install ansible, you can skip this if you prefer the global ansible bin of your system
-pip install -r requirements.txt
-
-# get all roles from ansible gallaxy
-ansible-gallaxy install -r roles/requirements.yml
-
-# ---------------
-# now get your hand dirty by creating some playbooks
-# ---------------
-
-# ... and when you are ready
-
-# bring virtual machine up for testing
-vagrant up
-
-# start your play
-ansible-playbook main.yml -e apt_select_ignore_period=0
 ansible-playbook swarm.yml
-
 ```
+
+Next, setup gitlab. (gitlab takes sometimes to bootup instance, so please be patient)
+
+```sh
+ansible-playbook gitlab.yml
+```
+
+Optionally, setup gitlab-runner, make sure you change runner token on `RUNNER_TOKEN` in `files/stack/gitlab-runner.yml` (More info about this soon)
+
+```sh
+ansible-playbook gitlab-runner.yml
+```
+
+TODO
+----
+
+- More detailed on setting up runner.
+- Make code more reusable.
+
+Authors
+-------
+
+Porawit Poboonma
+
+Credits
+-------
+
+- https://github.com/sameersbn/docker-gitlab
+- https://github.com/sameersbn/docker-gitlab-ci-multi-runner
