@@ -1,0 +1,23 @@
+version: '3.3'
+
+# NOTE: RUNNER_TOKEN is from your gitlab instance
+#       for shared runner token you can grab it from ${YOUR_GITLAB_URL}/admin/runners
+
+# TODO: make code reuseable
+
+services:
+  gitlab-runner:
+    image: sameersbn/gitlab-ci-multi-runner:1.1.4-7
+    extra_hosts:
+    - "gitlab.example.com:192.168.100.208"
+    - "registry.gitlab.example.com:192.168.100.208"
+    volumes:
+    - /opt/gitlab-runner:/home/gitlab_ci_multi_runner/data
+    environment:
+      CI_SERVER_URL: "http://192.168.100.208:10080/ci"
+      RUNNER_TOKEN: "tFQ3R1_x7N3N6PjtVw-L"
+      RUNNER_DESCRIPTION: "gitlab-shared-runner"
+      RUNNER_EXECUTOR: "shell"
+    deploy:
+      mode: replicated
+      replicas: 1

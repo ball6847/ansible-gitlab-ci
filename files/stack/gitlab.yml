@@ -9,6 +9,9 @@ version: '3.3'
 # mkdir -p /opt/gitlab/{gitlab,redis,postgresql,logs,certs}
 
 
+# TODO: add documentation on how to do this
+# TODO: make code reuseable
+
 services:
   redis:
     # restart: always
