@@ -1,20 +1,10 @@
 version: '3.3'
 
-# mkdir certs && cd certs
-# openssl req -nodes -newkey rsa:4096 -keyout registry-auth.key -out registry-auth.csr -subj "/CN=registry.example.com"
-# openssl x509 -in registry-auth.csr -out registry-auth.crt -req -signkey registry-auth.key -days 3650
-# cd ..
-# docker-compose up -d
-
-# mkdir -p /opt/gitlab/{gitlab,redis,postgresql,logs,certs}
-
-
 # TODO: add documentation on how to do this
 # TODO: make code reuseable
 
 services:
   redis:
-    # restart: always
     image: sameersbn/redis:latest
     command:
     - --loglevel warning
@@ -28,7 +18,6 @@ services:
           - node.labels.role == ci
 
   postgresql:
-    # restart: always
     image: sameersbn/postgresql:9.6-2
     volumes:
     - /opt/gitlab/postgresql:/var/lib/postgresql
@@ -45,13 +34,10 @@ services:
           - node.labels.role == ci
 
   gitlab:
-    # restart: always
     image: sameersbn/gitlab:9.5.5
     depends_on:
     - redis
     - postgresql
-    # external_links:
-    # - "registry:registry.gitlab.example.com"
     extra_hosts:
     - "gitlab.example.com:192.168.100.208"
     - "registry.gitlab.example.com:192.168.100.208"
@@ -94,10 +80,7 @@ services:
             - node.labels.role == ci
 
   registry:
-    # restart: always
     image: registry:2.4.1
-    # external_links:
-    # - "gitlab:gitlab.example.com"
     extra_hosts:
     - "gitlab.example.com:192.168.100.208"
     - "registry.gitlab.example.com:192.168.100.208"
@@ -120,11 +103,3 @@ services:
       placement:
         constraints:
           - node.labels.role == ci
-
-
-# volumes:
-#   gitlab-data:
-#   gitlab-logs:
-#   postgresql:
-#   redis:
-#   registry-data:
