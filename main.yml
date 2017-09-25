@@ -1,4 +1,0 @@
-- include: python.yml
-- include: provision.yml
-- include: swarm.yml
-- include: deploy.yml

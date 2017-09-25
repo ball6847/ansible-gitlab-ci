@@ -1,9 +1,0 @@
-http://0.0.0.0 {
-  fastcgi / php:9000 php
-  tls self_signed
-  
-}
-
-https://0.0.0.0 {
-  redir http://{host}{uri}  
-}
